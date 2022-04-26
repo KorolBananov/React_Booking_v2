@@ -1,7 +1,7 @@
 import PlaceCard from '../PlaceCard/PlaceCard';
 import Header from '../Header/Header';
 import Map from '../Map/Map';
-import Location from '../Locations/Location';
+import Locations from '../Locations/Locations';
 import Sort from '../Sort/Sort';
 
 
@@ -14,7 +14,7 @@ function Main(): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
           <section className="locations container">
-            <Location />
+            <Locations />
           </section>
         </div>
         <div className="cities">

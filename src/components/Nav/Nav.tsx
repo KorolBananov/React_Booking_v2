@@ -13,7 +13,7 @@ function Nav(): JSX.Element {
           </Link>
         </li>
         <li className="header__nav-item">
-          <Link className="header__nav-link" to={AppRoute.Main}>
+          <Link className="header__nav-link" to={AppRoute.Login}>
             <span className="header__signout">Sign out</span>
           </Link>
         </li>

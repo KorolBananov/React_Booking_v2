@@ -1,20 +1,32 @@
 import {Offer} from '../../mocks/offer';
-import {useState} from 'react';
 import Header from '../Header/Header';
-import PlaceCard from '../PlaceCard/PlaceCard';
 import CommentForm from '../CommentForm/CommentForm';
+import {neighbourhoodOffers} from '../../mocks/offers';
+import {useState} from 'react';
+import Map from '../Map/Map';
+import {PROPERTY_MAP_HEIGHT} from '../../consts';
+import CommentList from '../CommentList/CommentList';
+import OfferList from '../OfferList/OfferList';
+import {useAppSelector} from '../../hooks';
 
-
-type RoomProps = {
-  offer: Offer;
-}
-
-function Room({offer}: RoomProps): JSX.Element {
-  const [activeCard, setActiveCard] = useState(0);
-
-  const {photos, isPremium, price, header, description, type, isFavorite, rating, bedroomsNumber, maximumGuests, amenities, host, reviews} = offer;
+function Room():JSX.Element {
+  const {offers} = useAppSelector((state) => state);
+  const openOffer = offers[0];
+  const {photos, isPremium, price, header, description, type, isFavorite, rating, bedroomsNumber, maximumGuests, amenities, host, reviews} = openOffer;
   const {name, isPro, avatar} = host;
   const favoriteClassName = `property__bookmark-button${isFavorite ? isFavorite && ' property__bookmark-button--active button' : ' button'}`;
+
+  const city = offers[0].city;
+
+  const [activeCard, setActiveCard] = useState < Offer | null>(
+    null,
+  );
+
+  const onListItemHover = (id: string) => {
+    const currentOffer = neighbourhoodOffers.find((offer) => String(offer.id) === id);
+    setActiveCard(currentOffer ?? null);
+  };
+
   return (
     <div className="page">
       <Header />
@@ -100,43 +112,21 @@ function Room({offer}: RoomProps): JSX.Element {
                 <h2 className="reviews__title">
                   Reviews · <span className="reviews__amount">{reviews.length}</span>
                 </h2>
-                <ul className="reviews__list">
-                  {reviews.map((review, index) => (
-                    <li className="reviews__item" key={String(index)}>
-                      <div className="reviews__user user">
-                        <div className="reviews__avatar-wrapper user__avatar-wrapper">
-                          <img
-                            className="reviews__avatar user__avatar"
-                            src={review.avatar}
-                            width={54}
-                            height={54}
-                            alt="Reviews avatar"
-                          />
-                        </div>
-                        <span className="reviews__user-name">{review.name}</span>
-                      </div>
-                      <div className="reviews__info">
-                        <div className="reviews__rating rating">
-                          <div className="reviews__stars rating__stars">
-                            <span style={{ width: `${review.rate * 20}%` }} />
-                            <span className="visually-hidden">Rating</span>
-                          </div>
-                        </div>
-                        <p className="reviews__text">
-                          {review.review}
-                        </p>
-                        <time className="reviews__time" dateTime="2019-04-24">
-                          {review.date}
-                        </time>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <CommentList reviews={reviews} />
                 <CommentForm />
               </section>
             </div>
           </div>
-          <section className="property__map map" />
+          <section className="property map">
+            {
+              <Map
+                city={city}
+                offers={neighbourhoodOffers}
+                activeCard={activeCard}
+                height={PROPERTY_MAP_HEIGHT}
+              />
+            }
+          </section>
         </section>
         <div className="container">
           <section className="near-places places">
@@ -144,27 +134,7 @@ function Room({offer}: RoomProps): JSX.Element {
               Other places in the neighbourhood
             </h2>
             <div className="near-places__list places__list">
-              <PlaceCard
-                offer={offer}
-                onActiveCard={(value) => {
-                  setActiveCard(value);
-                }}
-                activeCard = {activeCard}
-              />
-              <PlaceCard
-                offer={offer}
-                onActiveCard={(value) => {
-                  setActiveCard(value);
-                }}
-                activeCard = {activeCard}
-              />
-              <PlaceCard
-                offer={offer}
-                onActiveCard={(value) => {
-                  setActiveCard(value);
-                }}
-                activeCard = {activeCard}
-              />
+              <OfferList offers={neighbourhoodOffers} onListItemHover={onListItemHover}/>
             </div>
           </section>
         </div>

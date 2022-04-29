@@ -1,19 +1,19 @@
 import PlaceCard from '../PlaceCard/PlaceCard';
-import {offers} from '../../mocks/offers';
-import {useState} from 'react';
+import {Offers} from '../../mocks/offer';
 
-function OfferList(): JSX.Element {
-  const [activeCard, setActiveCard] = useState(0);
+type PropsType = {
+  offers: Offers;
+  onListItemHover: (listItemName: string) => void;
+}
+
+function OfferList({offers, onListItemHover}: PropsType): JSX.Element {
   return (
     <div className="cities__places-list places__list tabs__content">
       {offers.map((offer) => (
         <PlaceCard
           key={offer.id}
           offer={offer}
-          onActiveCard={(value) => {
-            setActiveCard(value);
-          }}
-          activeCard = {activeCard}
+          onListItemHover={onListItemHover}
         />))}
     </div>
   );

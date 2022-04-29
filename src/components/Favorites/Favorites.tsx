@@ -1,14 +1,12 @@
 import Header from '../Header/Header';
-import {Offers} from '../../mocks/offer';
 import FavoritesList from '../FavoritesList/FavoritesList';
 import {Link} from 'react-router-dom';
 import {AppRoute} from '../../consts';
+import {useAppSelector} from '../../hooks';
 
-type FavoritesProps = {
-  offers: Offers;
-}
+function Favorites(): JSX.Element {
+  const {offers} = useAppSelector((state) => state);
 
-function Favorites({offers}:FavoritesProps): JSX.Element {
   return (
     <div className="page">
       <Header />

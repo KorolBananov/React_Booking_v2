@@ -1,36 +1,30 @@
+import {useAppSelector} from '../../hooks';
+import {store} from '../../store';
+import {changeCity} from '../../store/action';
+import {AppRoute} from '../../consts';
+import {Link} from 'react-router-dom';
+
+
 function Locations(): JSX.Element {
+  const {Cities, currentCity} = useAppSelector((state) => state);
+
   return (
     <ul className="locations__list tabs__list">
-      <li className="locations__item">
-        <a className="locations__item-link tabs__item" href="/">
-          <span>Paris</span>
-        </a>
-      </li>
-      <li className="locations__item">
-        <a className="locations__item-link tabs__item" href="/">
-          <span>Cologne</span>
-        </a>
-      </li>
-      <li className="locations__item">
-        <a className="locations__item-link tabs__item" href="/">
-          <span>Brussels</span>
-        </a>
-      </li>
-      <li className="locations__item">
-        <a className="locations__item-link tabs__item tabs__item--active" href="/">
-          <span>Amsterdam</span>
-        </a>
-      </li>
-      <li className="locations__item">
-        <a className="locations__item-link tabs__item" href="/">
-          <span>Hamburg</span>
-        </a>
-      </li>
-      <li className="locations__item">
-        <a className="locations__item-link tabs__item" href="/">
-          <span>Dusseldorf</span>
-        </a>
-      </li>
+      {Cities.map((city) => (
+        <li
+          className="locations__item"
+          key={city.name}
+          id={city.name}
+          onClick={() => {store.dispatch(changeCity(city));}}
+        >
+          <Link
+            className={`locations__item-link tabs__item ${city.name === currentCity.name ? 'tabs__item--active' : ''}`}
+            to={AppRoute.Main}
+          >
+            <span>{city.name}</span>
+          </Link>
+        </li>
+      ))}
     </ul>
   );
 }

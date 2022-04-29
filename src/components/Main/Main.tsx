@@ -1,15 +1,25 @@
-import Header from '../Header/Header';
-import Map from '../Map/Map';
 import Locations from '../Locations/Locations';
-import Sort from '../Sort/Sort';
+import Map from '../Map/Map';
+import Header from '../Header/Header';
+import {Offer} from '../../mocks/offer';
 import OfferList from '../OfferList/OfferList';
-import {Offers} from '../../mocks/offer';
+import {useState} from 'react';
+import {useAppSelector} from '../../hooks';
+import {MAP_HEIGHT} from '../../consts';
+import Sort from '../Sort/Sort';
+import {getSortedOffers} from '../../store/selectors';
 
-type MainProps = {
-  offers: Offers;
-}
+function Main(): JSX.Element {
+  const {currentCity} = useAppSelector((state) => state);
+  const sortedOffers = useAppSelector(getSortedOffers);
+  const [activeCard, setActiveCard] = useState< Offer | null>(
+    null,
+  );
 
-function Main({offers}: MainProps): JSX.Element {
+  const onListItemHover = (id: string) => {
+    const currentOffer = sortedOffers.find((offer) => String(offer.id) === id);
+    setActiveCard(currentOffer ?? null);
+  };
   return (
     <div className="page page--gray page--main">
       <Header />
@@ -17,24 +27,32 @@ function Main({offers}: MainProps): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
           <section className="locations container">
-            <Locations />
+            <Locations/>
           </section>
         </div>
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offers.length} places to stay in Amsterdam</b>
+              <b className="places__found">{sortedOffers.length} places to stay in {currentCity.name}</b>
               <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
+                <span className="places__sorting-caption">Sort by </span>
                 <Sort />
               </form>
-              <div className="cities__places-list places__list tabs__content">
-                <OfferList />
-              </div>
+              <OfferList offers={sortedOffers} onListItemHover={onListItemHover}/>
             </section>
             <div className="cities__right-section">
-              <Map />
+              <section className="cities__map map">
+                {
+                  <Map
+                    key={JSON.stringify(currentCity.location.lng + currentCity.location.lat)}
+                    city={currentCity}
+                    offers={sortedOffers}
+                    activeCard={activeCard}
+                    height={MAP_HEIGHT}
+                  />
+                }
+              </section>
             </div>
           </div>
         </div>

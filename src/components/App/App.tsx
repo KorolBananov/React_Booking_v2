@@ -7,7 +7,6 @@ import Login from '../Login/Login';
 import Room from '../Room/Room';
 import NotFound from '../NotFound/NotFound';
 
-
 function App(): JSX.Element {
   return (
     <BrowserRouter>

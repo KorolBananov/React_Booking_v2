@@ -1,4 +1,4 @@
-import {Offer} from '../../mocks/offer';
+import {Offer} from '../../types/offer';
 import Header from '../Header/Header';
 import CommentForm from '../CommentForm/CommentForm';
 import {neighbourhoodOffers} from '../../mocks/offers';

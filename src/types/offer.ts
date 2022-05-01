@@ -1,8 +1,10 @@
 import { CityName, OfferType } from '../consts';
-import { Reviews } from './reviews';
+import {Review} from './review';
+
 
 export type Host = {
-  avatar: string,
+  avatarUrl: string,
+  id: number,
   name: string,
   isPro: boolean,
 }
@@ -10,8 +12,8 @@ export type Host = {
 export type City = {
   name: CityName,
   location: {
-    lat: number,
-    lng: number,
+    latitude: number,
+    longitude: number,
     zoom: number,
   },
 }
@@ -19,23 +21,25 @@ export type City = {
 export type Offer = {
   id: number
   coordinates: {
-    lat: number
-    lng: number
+    latitude: number,
+    longitude: number,
+    zoom: number,
   },
   city: City
+  previewImage: string
   photos: string[],
   isPremium: boolean,
   price: number,
-  header: string,
+  title: string,
   description: string,
   type: OfferType,
   isFavorite: boolean,
   rating: number
-  bedroomsNumber: number,
-  maximumGuests: number
-  amenities: string[],
+  bedrooms: number,
+  maxAdults: number
+  goods: string[],
   host: Host,
-  reviews: Reviews
+  reviews: Review[],
 }
 
 export type Offers = Offer[];

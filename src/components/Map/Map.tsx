@@ -1,4 +1,4 @@
-import {City, Offer, Offers} from '../../mocks/offer';
+import {City, Offer, Offers} from '../../types/offer';
 import {Icon, Marker} from 'leaflet';
 import {URL_MARKER_CURRENT, URL_MARKER_DEFAULT} from '../../consts';
 import {useEffect, useRef} from 'react';

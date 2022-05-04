@@ -6,8 +6,24 @@ import PrivateRoute from '../PrivateRoute/PrivateRoute';
 import Login from '../Login/Login';
 import Room from '../Room/Room';
 import NotFound from '../NotFound/NotFound';
+import {useAppSelector} from '../../hooks';
+import {getAuthorizationStatus} from '../../store/userProcess/selectors';
+import {getLoadedDataStatus} from '../../store/offersData/selectors';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
+
+const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
+  authorizationStatus === AuthorizationStatus.Unknown;
 
 function App(): JSX.Element {
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const isDataLoaded = useAppSelector(getLoadedDataStatus);
+
+  if (isCheckedAuth(authorizationStatus) || !isDataLoaded) {
+    return (
+      <LoadingScreen />
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>
@@ -16,9 +32,9 @@ function App(): JSX.Element {
           element={<Main />}
         />
         <Route
-          path={ AppRoute.Favorites}
+          path={AppRoute.Favorites}
           element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
+            <PrivateRoute authorizationStatus={authorizationStatus}>
               <Favorites />
             </PrivateRoute>
           }

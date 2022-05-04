@@ -1,22 +1,24 @@
 import PlaceCard from '../PlaceCard/PlaceCard';
-import {Offers} from '../../types/offer';
+import {Offer, Offers} from '../../types/offer';
 
-type PropsType = {
+type OffersListProps = {
   offers: Offers;
-  onListItemHover: (listItemName: string) => void;
+  onPlaceCardHover: (offer: Offer | null) => void;
+  className: string;
 }
 
-function OfferList({offers, onListItemHover}: PropsType): JSX.Element {
+function OffersList({offers, onPlaceCardHover, className}: OffersListProps):JSX.Element {
   return (
-    <div className="cities__places-list places__list tabs__content">
+    <div className={className}>
       {offers.map((offer) => (
         <PlaceCard
-          key={offer.id}
+          key = {offer.id}
           offer={offer}
-          onListItemHover={onListItemHover}
-        />))}
+          onPlaceCardHover={onPlaceCardHover}
+        />
+      ))}
     </div>
   );
 }
 
-export default OfferList;
+export default OffersList;

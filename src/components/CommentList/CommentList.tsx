@@ -1,19 +1,20 @@
-import {Reviews} from '../../types/review';
-import Comment from '../Comment/Comment';
+import {Review} from '../../types/review';
+import CommentItem from '../CommentItem/CommentItem';
+import {lengthOfReviews, sortReviewsDate} from '../../utils';
 
 type CommentListProps = {
-  reviews: Reviews;
+  reviews: Review[];
 }
 
 function CommentList({reviews}: CommentListProps): JSX.Element {
+  const  sortReviews: Review[] = sortReviewsDate(reviews);
+  const shownReviews: Review[] = lengthOfReviews(sortReviews);
+
   return (
     <ul className="reviews__list">
-      {
-        reviews.map((review) =>
-          (
-            <Comment review={review} key={review.id}/>
-          ))
-      }
+      {shownReviews.map((review) => (
+        <CommentItem review={review} key={review.id} />
+      ))}
     </ul>
   );
 }

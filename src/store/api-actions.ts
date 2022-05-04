@@ -2,12 +2,13 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 import {APIRoute, AppRoute, AuthorizationStatus} from '../consts';
 import {redirectToRoute} from './action';
 import {api, store} from './index';
-import {Offers} from '../types/offer';
+import {Offer, Offers} from '../types/offer';
 import {AuthData} from '../types/authData';
 import {UserData} from '../types/userData';
 import {dropToken, saveToken} from '../services/token';
 import {errorHandle} from '../services/errorHandle';
 import {
+  loadCurrentOffer,
   loadCurrentOfferComments,
   loadCurrentOffersNearby,
   loadFavoriteOffers, loadOffers,
@@ -24,6 +25,18 @@ export const fetchOffersAction = createAsyncThunk(
     try {
       const {data} = await api.get<Offers>(APIRoute.Offers);
       store.dispatch(loadOffers(data));
+    } catch (error) {
+      errorHandle(error);
+    }
+  },
+);
+
+export const fetchCurrentOffer  = createAsyncThunk(
+  'data/loadCurrentOffer',
+  async(id: number) => {
+    try{
+      const {data} = await api.get<Offer>(`${APIRoute.Offers}/${id}`);
+      store.dispatch(loadCurrentOffer(data));
     } catch (error) {
       errorHandle(error);
     }

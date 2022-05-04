@@ -101,7 +101,7 @@ export enum APIRoute {
   Offers = '/hotels',
   Favorite = '/favorite',
   Comments = '/comments',
-  Login = '/Login',
+  Login = '/login',
   Logout = '/logout',
   Reviews = '/comments',
 }
@@ -123,7 +123,7 @@ export enum NameSpace {
 export const PERCENT_PER_STAR = 20;
 export const MAX_REVIEWS_COUNT = 10;
 
-export const MONTH_NAMES = [
+export const MONTHS_NAMES = [
   'January',
   'February',
   'March',

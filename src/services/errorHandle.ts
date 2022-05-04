@@ -1,9 +1,9 @@
-import request from 'axios';
-import {store} from '../store';
-import {redirectToRoute} from '../store/action';
 import {AppRoute, HTTP_CODE} from '../consts';
+import {store} from '../store';
+import request from 'axios';
 import {ErrorType} from '../types/error';
 import {toast} from 'react-toastify';
+import {redirectToRoute} from '../store/action';
 
 export const errorHandle = (error: ErrorType): void => {
   if (!request.isAxiosError(error)) {

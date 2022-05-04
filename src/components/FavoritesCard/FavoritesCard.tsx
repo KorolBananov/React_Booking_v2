@@ -1,11 +1,11 @@
-import {Offer} from '../../types/offer';
+import {Favorite} from '../../types/favorite';
 
 type FavoritesCardProps = {
-  offer: Offer;
+  offer: Favorite;
 }
 
 function FavoritesCard({offer}: FavoritesCardProps): JSX.Element {
-  const {id, photos, isPremium, price, header, type, rating} = offer;
+  const {id, previewImage, isPremium, price, title, type, rating} = offer;
   const premiumClassname = `place-card__mark ${isPremium ? '' : 'visually-hidden'}`;
 
   return (
@@ -17,7 +17,7 @@ function FavoritesCard({offer}: FavoritesCardProps): JSX.Element {
         <a href="#">
           <img
             className="place-card__image"
-            src={photos[0]}
+            src={previewImage}
             width={150}
             height={110}
             alt="Place image"
@@ -53,7 +53,7 @@ function FavoritesCard({offer}: FavoritesCardProps): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="#">{header}</a>
+          <a href="#">{title}</a>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>

@@ -2,20 +2,22 @@ import {useAppSelector} from '../../hooks';
 import {useState} from 'react';
 import {SortTypes} from '../../consts';
 import {store} from '../../store';
-import {changeSortType} from '../../store/action';
+import {changeSortType} from '../../store/offersData/offersData';
+import {getCurrentSortType} from '../../store/offersData/selectors';
 
-function Sort(): JSX.Element {
-  const {currentSortType} = useAppSelector((state) => state);
+function Sort():JSX.Element {
+  const currentSortType = useAppSelector(getCurrentSortType);
   const [isOpened, setOpenedStatus] = useState(false);
-  const handlerSortFormClick = () => {
+  const handlerSortFormCLick = () => {
     setOpenedStatus(!isOpened);
   };
 
+
   return (
     <>
-      <span className="places__sorting-type" tabIndex={0} onClick={handlerSortFormClick}>
+      <span className="places__sorting-type" tabIndex={0}  onClick={handlerSortFormCLick}>
         {currentSortType}
-        <svg className="places__sorting-arrow" width="7" height="4">
+        <svg className="places__sorting-arrow" width={7} height={4}>
           <use xlinkHref="#icon-arrow-select" />
         </svg>
       </span>

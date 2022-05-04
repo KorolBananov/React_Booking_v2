@@ -1,6 +1,6 @@
 import {MutableRefObject, useEffect, useState} from 'react';
+import { Map, TileLayer } from 'leaflet';
 import {City} from '../types/offer';
-import {Map, TileLayer} from 'leaflet';
 
 function useMap (
   mapRef: MutableRefObject<HTMLElement | null>,
@@ -23,7 +23,6 @@ function useMap (
         {
           attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-
         },
       );
 

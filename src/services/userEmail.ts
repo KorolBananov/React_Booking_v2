@@ -1,10 +1,16 @@
-const USER_EMAIL = 'email';
+const USER_EMAIL_KEY_NAME = 'six-cities-user-email';
 
-export const getUserEmail = (): string => {
-  const email = localStorage.getItem(USER_EMAIL);
-  return email ?? '';
+export type UserEmail = string;
+
+export const getUserEmail = (): UserEmail => {
+  const userEmail = localStorage.getItem(USER_EMAIL_KEY_NAME);
+  return userEmail ?? '';
 };
 
-export const saveUserEmail = (email: string): void => {
-  localStorage.setItem(USER_EMAIL, email);
+export const saveUserEmail = (userEmail: UserEmail): void => {
+  localStorage.setItem(USER_EMAIL_KEY_NAME, userEmail);
+};
+
+export const removeUserEmail = (): void => {
+  localStorage.removeItem(USER_EMAIL_KEY_NAME);
 };

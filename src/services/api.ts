@@ -1,13 +1,13 @@
 import axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
-import {getToken} from './token';
+import { getToken } from './token';
 
-const BACKEND_URL = 'https://9.react.pages.academy/six-cities';
+export const BASE_URL = 'https://9.react.pages.academy/six-cities';
+
 const REQUEST_TIMEOUT = 5000;
 
 export const createAPI = (): AxiosInstance => {
-
   const api = axios.create({
-    baseURL: BACKEND_URL,
+    baseURL: BASE_URL,
     timeout: REQUEST_TIMEOUT,
   });
 
@@ -22,5 +22,6 @@ export const createAPI = (): AxiosInstance => {
       return config;
     },
   );
+
   return api;
 };

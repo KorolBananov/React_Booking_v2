@@ -1,146 +1,106 @@
-import {createAsyncThunk} from '@reduxjs/toolkit';
-import {APIRoute, AppRoute, AuthorizationStatus} from '../consts';
-import {redirectToRoute} from './action';
-import {api, store} from './index';
-import {Offer, Offers} from '../types/offer';
-import {AuthData} from '../types/authData';
-import {UserData} from '../types/userData';
-import {dropToken, saveToken} from '../services/token';
-import {errorHandle} from '../services/errorHandle';
-import {
-  loadCurrentOffer,
-  loadCurrentOfferComments,
-  loadCurrentOffersNearby,
-  loadFavoriteOffers, loadOffers,
-  setNewReview
-} from './offersData/offersData';
-import {Review, ReviewSend} from '../types/review';
-import {FavoriteFlagType} from '../types/favorite';
-import {saveUserEmail} from '../services/userEmail';
-import {requireAuthorization} from './userProcess/userProcess';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { api, store } from './index';
+import { APIRoute, AuthorizationStatus } from '../consts';
+import { loadOffers, loadFavoriteOffers, requireAuthorization, redirectToRoute, setReviews } from './action';
+import {Offer} from '../types/offer';
+import {Review} from '../types/review';
+import { AuthData } from '../types/authData';
+import { UserData } from '../types/userData';
+import { NewReviewData } from '../types/newReviewData';
+import {saveToken, removeToken} from '../services/token';
+import {saveUserEmail, removeUserEmail} from '../services/userEmail';
+import {saveUserAvatarUrl, removeUserAvatarUrl} from '../services/userAvatar';
+import { AppRoute } from '../consts';
+import { errorHandler } from '../services/errorHandler';
 
 export const fetchOffersAction = createAsyncThunk(
-  'data/fetchOffers',
+  'fetchOffers',
   async () => {
     try {
-      const {data} = await api.get<Offers>(APIRoute.Offers);
+      const {data} = await api.get<Offer[]>(APIRoute.Offers);
       store.dispatch(loadOffers(data));
     } catch (error) {
-      errorHandle(error);
+      errorHandler(error);
     }
   },
 );
 
-export const fetchCurrentOffer  = createAsyncThunk(
-  'data/loadCurrentOffer',
-  async(id: number) => {
-    try{
-      const {data} = await api.get<Offer>(`${APIRoute.Offers}/${id}`);
-      store.dispatch(loadCurrentOffer(data));
-    } catch (error) {
-      errorHandle(error);
-    }
-  },
-);
-
-export const fetchNearbyOffersAction = createAsyncThunk(
-  'data/fetchNearbyOffers',
-  async (id: number) => {
-    try {
-      const {data} = await api.get<Offers>(`${APIRoute.Offers}/${id}/nearby`);
-      store.dispatch(loadCurrentOffersNearby(data));
-    } catch (error) {
-      errorHandle(error);
-    }
-  },
-);
-
-export const fetchCurrentOfferComments = createAsyncThunk(
-  'data/fetchReviews',
-  async (id: number) => {
-    try {
-      const {data} = await api.get<Review>(`${APIRoute.Comments}/${id}`);
-      store.dispatch(loadCurrentOfferComments(data));
-    } catch (error) {
-      errorHandle(error);
-    }
-  },
-);
-
-export const fetchFavoriteOffers  = createAsyncThunk(
-  'data/favorite',
+export const fetchFavoriteOffersAction = createAsyncThunk(
+  'fetchFavoriteOffers',
   async () => {
     try {
-      const { data } = await api.get<Offers>(APIRoute.Favorite);
+      const {data} = await api.get<Offer[]>(APIRoute.Favorite);
       store.dispatch(loadFavoriteOffers(data));
     } catch (error) {
-      errorHandle(error);
+      errorHandler(error);
     }
   },
 );
 
-export const checkAuthAction = createAsyncThunk(
-  'user/checkAuth',
+export const checkAuthStatusAction = createAsyncThunk(
+  'checkAuthStatus',
   async () => {
     try {
       await api.get(APIRoute.Login);
       store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
-    } catch (error) {
-      errorHandle(error);
+    } catch {
       store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
     }
   },
 );
 
 export const loginAction = createAsyncThunk(
-  'user/login',
+  'login',
   async ({login: email, password}: AuthData) => {
     try {
       const {data} = await api.post<UserData>(APIRoute.Login, {email, password});
       saveToken(data.token);
       store.dispatch(requireAuthorization(AuthorizationStatus.Auth));
-      store.dispatch(redirectToRoute(AppRoute.Main));
       saveUserEmail(data.email);
+      saveUserAvatarUrl(data.avatarUrl);
+      store.dispatch(redirectToRoute(AppRoute.Root));
     } catch (error) {
-      errorHandle(error);
+      errorHandler(error);
       store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
     }
   },
 );
 
 export const logoutAction = createAsyncThunk(
-  'user/logout',
+  'logout',
   async () => {
     try {
       await api.delete(APIRoute.Logout);
-      dropToken();
+      removeToken();
+      removeUserEmail();
+      removeUserAvatarUrl();
       store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
     } catch (error) {
-      errorHandle(error);
+      errorHandler(error);
     }
   },
 );
 
-export const toggleFavoriteAction = createAsyncThunk(
-  'data/toggleFavorite',
-  async ({ id, flag }: FavoriteFlagType) => {
+export const fetchReviewsAction = createAsyncThunk(
+  'fetchReviews',
+  async (offerId : string | undefined) => {
     try {
-      await api.post<Offers>(`${APIRoute.Favorite}/${id}/${flag}`);
-      store.dispatch(fetchFavoriteOffers());
+      const {data} = await api.get<Review[]>(`${APIRoute.Reviews}/${offerId}`);
+      store.dispatch(setReviews(data));
     } catch (error) {
-      errorHandle(error);
+      errorHandler(error);
     }
   },
 );
 
-export const fetchSendReview = createAsyncThunk(
-  'data/fetchSendReviews',
-  async ({id, comment, rating}: ReviewSend) => {
+export const addReviewAction = createAsyncThunk(
+  'addReview',
+  async ({comment, rating, offerId}: NewReviewData) => {
     try {
-      const {data} = await api.post<Review[]>(`${APIRoute.Reviews}/${id}`, {comment, rating});
-      store.dispatch(setNewReview(data));
+      const {data} = await api.post<Review[]>(`${APIRoute.Reviews}/${offerId}`, {comment, rating});
+      store.dispatch(setReviews(data));
     } catch (error) {
-      errorHandle(error);
+      errorHandler(error);
     }
   },
 );

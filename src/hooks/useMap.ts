@@ -1,38 +1,41 @@
+import leaflet from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import {MutableRefObject, useEffect, useState} from 'react';
-import { Map, TileLayer } from 'leaflet';
-import {City} from '../types/offer';
+import {Map, TileLayer} from 'leaflet';
+import {useAppSelector} from './index';
+import {createCitiesDictionary} from '../utils';
 
-function useMap (
-  mapRef: MutableRefObject<HTMLElement | null>,
-  city: City,
-): Map | null {
+function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: string): Map | null {
   const [map, setMap] = useState<Map | null>(null);
+
+  const offers = useAppSelector((state) => state.offers);
+
+  const citiesDictionary = createCitiesDictionary(offers);
+
+  const currentCity = citiesDictionary[city];
 
   useEffect(() => {
     if (mapRef.current !== null && map === null) {
-      const instance = new Map(mapRef.current, {
+      const instance = leaflet.map(mapRef.current, {
         center: {
-          lat: city.location.latitude,
-          lng: city.location.longitude,
+          lat: currentCity.location.latitude,
+          lng: currentCity.location.longitude,
         },
-        zoom: city.location.zoom,
+        zoom: currentCity.location.zoom,
       });
 
-      const layer = new TileLayer(
-        'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-        {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        },
-      );
+      const layer = new TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
 
       instance.addLayer(layer);
 
       setMap(instance);
     }
-  }, [mapRef, map, city]);
+
+  }, [mapRef, map, city, currentCity.location.latitude, currentCity.location.longitude, currentCity.location.zoom]);
 
   return map;
+
 }
 
 export default useMap;

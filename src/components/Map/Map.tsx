@@ -1,68 +1,54 @@
-import {City, Offer, Offers} from '../../types/offer';
 import {Icon, Marker} from 'leaflet';
-import {URL_MARKER_CURRENT, URL_MARKER_DEFAULT} from '../../consts';
-import {useEffect, useRef} from 'react';
+import {Offer} from '../../types/offer';
+import {useRef, useEffect} from 'react';
 import useMap from '../../hooks/useMap';
-import 'leaflet/dist/leaflet.css';
+import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT, MapClasses} from '../../consts';
 
 type MapProps = {
-  city: City;
-  currentOffers: Offers;
-  selectedPoint: Offer | null;
-  className: string;
-  height: number;
-};
+  className: MapClasses;
+  mapStyle?: {width: string, margin: string};
+  city: string;
+  points: Offer[];
+  activeOffer: Offer | null;
+}
 
 const defaultCustomIcon = new Icon({
   iconUrl: URL_MARKER_DEFAULT,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: [27, 39],
+  iconAnchor: [13.5, 39],
 });
 
 const currentCustomIcon = new Icon({
   iconUrl: URL_MARKER_CURRENT,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: [27, 39],
+  iconAnchor: [13.5, 39],
 });
 
-const markers: Marker[] = [];
-
-function Map({city, currentOffers, selectedPoint, className, height}: MapProps): JSX.Element {
+function Map({className, city, points, activeOffer, mapStyle}: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
   useEffect(() => {
+
     if (map) {
-      currentOffers.forEach((offer) => {
+      points.forEach((point) => {
         const marker = new Marker({
-          lat: offer.location.latitude,
-          lng: offer.location.longitude,
+          lat: point.location.latitude,
+          lng: point.location.longitude,
         });
 
-        marker
-          .setIcon(
-            selectedPoint !== null && offer.id === selectedPoint.id
-              ? currentCustomIcon
-              : defaultCustomIcon)
+        marker.setIcon(
+          activeOffer !== null && point.id === activeOffer.id
+            ? currentCustomIcon
+            : defaultCustomIcon)
           .addTo(map);
-        markers.push(marker);
       });
     }
-    return () => {
-      markers.forEach((marker) => {
-        if (map) {
-          marker.removeFrom(map);
-        }
-      });
-    };
-  }, [map, currentOffers, selectedPoint]);
+
+  }, [map, points, activeOffer]);
 
   return (
-    <section
-      className={className}
-      ref={mapRef}
-      style={{height: height}}
-    />
+    <section ref={mapRef} className={`${className} map`} style={mapStyle}/>
   );
 }
 

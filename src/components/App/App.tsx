@@ -1,58 +1,64 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import Main from '../Main/Main';
-import Favorites from '../Favorites/Favorites';
+import {Routes, Route} from 'react-router-dom';
 import {AppRoute, AuthorizationStatus} from '../../consts';
-import PrivateRoute from '../PrivateRoute/PrivateRoute';
-import Login from '../Login/Login';
-import Room from '../Room/Room';
-import NotFound from '../NotFound/NotFound';
-import {useAppSelector} from '../../hooks';
-import {getAuthorizationStatus} from '../../store/userProcess/selectors';
-import {getLoadedDataStatus} from '../../store/offersData/selectors';
+import MainScreen from '../MainScreen/MainScreen';
+import LoginScreen from '../LoginScreen/LoginScreen';
+import PropertyScreen from '../PropertyScreen/PropertyScreen';
+import NotFoundScreen from '../NotFoundScreen/NotFoundScreen';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
-
-const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
-  authorizationStatus === AuthorizationStatus.Unknown;
+import PrivateRoute from '../PrivateRoute/PrivateRoute';
+import {useAppSelector, useAppDispatch} from '../../hooks';
+import {useEffect} from 'react';
+import { fetchOffersAction, checkAuthStatusAction } from '../../store/api-actions';
+import browserHistory from '../../browserHistory';
+import HistoryRouter from '../HistoryRouter/HistoryRouter';
+import FavoritesScreen from '../FavoritesScreen/FavoritesScreen';
 
 function App(): JSX.Element {
-  const authorizationStatus = useAppSelector(getAuthorizationStatus);
-  const isDataLoaded = useAppSelector(getLoadedDataStatus);
 
-  if (isCheckedAuth(authorizationStatus) || !isDataLoaded) {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchOffersAction());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(checkAuthStatusAction());
+  }, [dispatch]);
+
+  const {authorizationStatus , isDataLoaded} = useAppSelector((state) => state);
+
+  if ((authorizationStatus === AuthorizationStatus.Unknown) || !isDataLoaded) {
     return (
-      <LoadingScreen />
+      <LoadingScreen/>
     );
   }
 
   return (
-    <BrowserRouter>
+    <HistoryRouter history={browserHistory}>
       <Routes>
-        <Route
-          path = {AppRoute.Main}
-          element={<Main />}
-        />
-        <Route
-          path={AppRoute.Favorites}
+        <Route path={AppRoute.Root}
+          element={<MainScreen/>}
+        >
+        </Route>
+        <Route path={AppRoute.Login}
+          element={<LoginScreen />}
+        >
+        </Route>
+        <Route path={AppRoute.Property}
+          element={<PropertyScreen/>}
+        >
+        </Route>
+        <Route path={AppRoute.Favorites}
           element={
             <PrivateRoute authorizationStatus={authorizationStatus}>
-              <Favorites />
+              <FavoritesScreen/>
             </PrivateRoute>
           }
-        />
-        <Route
-          path={AppRoute.Login}
-          element={<Login />}
-        />
-        <Route
-          path={AppRoute.Room}
-          element={<Room />}
-        />
-        <Route
-          path="*"
-          element={<NotFound />}
-        />
+        >
+        </Route>
+        <Route path='*' element={<NotFoundScreen/>}/>
       </Routes>
-    </BrowserRouter>
+    </HistoryRouter>
   );
 }
 

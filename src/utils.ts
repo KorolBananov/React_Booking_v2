@@ -1,27 +1,35 @@
-import {Offer} from './types/offer';
-import {MAX_REVIEWS_COUNT} from './consts';
-import {Review} from './types/review';
+import {Offer, City} from './types/offer';
 
-export const sortPriceToHigh = (prev: Offer, next: Offer) => prev.price - next.price;
-export const sortPriceToLow = (prev: Offer, next: Offer) => next.price - prev.price;
-export const sortRatingToHigh = (prev: Offer, next: Offer) => next.rating - prev.rating;
+import {MAX_RATING, MAX_PERCENT_RATING, SortingOptionsValues} from './consts';
 
-const PERCENT = 100;
-const MAX_RATING = 5;
+export const countRatingPercent = (rating: number) => rating * MAX_PERCENT_RATING / MAX_RATING;
 
-export const ratingWidth = (rating: number): number => Math.round(rating / MAX_RATING * PERCENT);
+export const filterOffers = (offers: Offer[], currentCity: string) => offers.filter((offer) => offer.city.name === currentCity);
 
-export const lengthOfReviews = (array: Review[]) => {
-  if (array.length > 10) {
-    return array.slice(0, MAX_REVIEWS_COUNT);
+export const createCitiesDictionary = (offers: Offer[]) =>
+  offers.map((offer) => offer.city)
+    .reduce((acc: {[index: string]: City}, citiesItem) => {
+      acc[citiesItem.name] = citiesItem;
+      return acc;
+    }, {});
+
+const sortByPriceDown = (offerA: Offer, offerB: Offer) => offerB.price - offerA.price;
+
+const sortByPriceUp = (offerA: Offer, offerB: Offer) => offerA.price - offerB.price;
+
+const sortByRating = (offerA: Offer, offerB: Offer) => offerB.rating - offerA.rating;
+
+export const sortOffers = (offers: Offer[], currentSortOption: string | undefined) => {
+  switch(currentSortOption) {
+    case SortingOptionsValues.Popular:
+      return offers;
+    case SortingOptionsValues.PriceDown:
+      return [...offers].sort(sortByPriceDown);
+    case SortingOptionsValues.PriceUp:
+      return [...offers].sort(sortByPriceUp);
+    case SortingOptionsValues.TopRated:
+      return [...offers].sort(sortByRating);
+    default:
+      return offers;
   }
-  return array;
-};
-
-export const sortReviewsDate = (array: Review[]) => {
-  if (array.length < 2) {
-    return array;
-  }
-  const newArray = array.slice();
-  return newArray.sort((b, a) => Date.parse(a.date) - Date.parse(b.date));
 };

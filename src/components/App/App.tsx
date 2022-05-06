@@ -8,10 +8,12 @@ import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import PrivateRoute from '../PrivateRoute/PrivateRoute';
 import {useAppSelector, useAppDispatch} from '../../hooks';
 import {useEffect} from 'react';
-import { fetchOffersAction, checkAuthStatusAction } from '../../store/api-actions';
+import { fetchOffersAction, checkAuthStatusAction } from '../../store/apiActions';
 import browserHistory from '../../browserHistory';
 import HistoryRouter from '../HistoryRouter/HistoryRouter';
 import FavoritesScreen from '../FavoritesScreen/FavoritesScreen';
+import {getAuthorizationStatus} from '../../store/userData/selector';
+import {ToastContainer} from 'react-toastify';
 
 function App(): JSX.Element {
 
@@ -25,7 +27,9 @@ function App(): JSX.Element {
     dispatch(checkAuthStatusAction());
   }, [dispatch]);
 
-  const {authorizationStatus , isDataLoaded} = useAppSelector((state) => state);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+
+  const isDataLoaded = useAppSelector(getAuthorizationStatus);
 
   if ((authorizationStatus === AuthorizationStatus.Unknown) || !isDataLoaded) {
     return (
@@ -35,6 +39,7 @@ function App(): JSX.Element {
 
   return (
     <HistoryRouter history={browserHistory}>
+      <ToastContainer />
       <Routes>
         <Route path={AppRoute.Root}
           element={<MainScreen/>}

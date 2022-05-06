@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, FormEvent} from 'react';
 import { useParams } from 'react-router-dom';
 import { MIN_CHARACTERS_NUMBER, REVIEW_TITLES } from '../../consts';
 import {useAppDispatch} from '../../hooks';
-import { addReviewAction } from '../../store/api-actions';
+import { addReviewAction } from '../../store/apiActions';
 
 function ReviewForm(): JSX.Element {
   const [ratingNumber, setRatingNumber] = useState(0);

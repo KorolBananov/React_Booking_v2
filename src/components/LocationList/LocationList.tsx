@@ -1,10 +1,12 @@
 import { CITIES } from '../../consts';
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import {changeCity} from '../../store/action';
+import {getCity} from '../../store/usingData/selector';
+import {memo} from 'react';
+import {changeCity} from '../../store/usingData/usingData';
 
 function LocationsList(): JSX.Element {
 
-  const currentCity = useAppSelector((state) => state.city);
+  const currentCity = useAppSelector(getCity);
 
   const dispatch = useAppDispatch();
 
@@ -15,7 +17,7 @@ function LocationsList(): JSX.Element {
           <a onClick={(evt) => {
             evt.preventDefault();
             dispatch(changeCity(city));
-          }} className={`locations__item-link ${city === currentCity ? 'tabs__item tabs__item--active' : ''}`} href="/"
+          }} className={`locations__item-link ${city === currentCity && 'tabs__item tabs__item--active'}`} href="/"
           >
             <span>{city}</span>
           </a>
@@ -26,4 +28,4 @@ function LocationsList(): JSX.Element {
   );
 }
 
-export default LocationsList;
+export default memo(LocationsList);

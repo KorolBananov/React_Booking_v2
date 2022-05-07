@@ -3,6 +3,8 @@ import {Offer} from '../../types/offer';
 import {useRef, useEffect, memo} from 'react';
 import useMap from '../../hooks/useMap';
 import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT, MapClasses} from '../../consts';
+import {useAppSelector} from '../../hooks';
+import {getOffers} from '../../store/appData/selector';
 
 type MapProps = {
   className: MapClasses;
@@ -26,7 +28,8 @@ const currentCustomIcon = new Icon({
 
 function Map({className, city, points, activeOffer, mapStyle}: MapProps): JSX.Element {
   const mapRef = useRef(null);
-  const map = useMap(mapRef, city);
+  const offers = useAppSelector(getOffers)
+  const map = useMap(mapRef, city, offers);
 
   useEffect(() => {
 
@@ -48,7 +51,7 @@ function Map({className, city, points, activeOffer, mapStyle}: MapProps): JSX.El
   }, [map, points, activeOffer]);
 
   return (
-    <section ref={mapRef} className={`${className} map`} style={mapStyle}/>
+    <section ref={mapRef} className={`${className} map`} style={mapStyle} data-testid="map"/>
   );
 }
 

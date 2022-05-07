@@ -1,9 +1,8 @@
 import Header from '../Header/Header';
 import PropertyCardsList from '../PropertyCardsList/PropertyCardsList';
 import Map from '../Map/Map';
-import {Offer} from '../../types/offer';
 import {AppRoute, AuthorizationStatus, MapClasses, MAX_PHOTOS_AMOUNT, propertyCardClasses} from '../../consts';
-import {countRatingPercent} from '../../utils';
+import {countRatingPercent, getMaxAmount} from '../../utils';
 import {useNavigate, useParams} from 'react-router-dom';
 import {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '../../hooks';
@@ -13,10 +12,6 @@ import {getAuthorizationStatus} from '../../store/userData/selector';
 import {FavoriteStatusData} from '../../types/favoriteStatusData';
 import NotFoundScreen from '../NotFoundScreen/NotFoundScreen';
 import Reviews from '../Reviews/Reviews';
-
-function getMaxPhotosAmount(offer: Offer): number {
-  return Math.min(offer.images.length, MAX_PHOTOS_AMOUNT);
-}
 
 function PropertyScreen(): JSX.Element | null {
 
@@ -63,13 +58,13 @@ function PropertyScreen(): JSX.Element | null {
   const mapStyle = {width: '1144px', margin: '0 auto 50px'};
 
   return (
-    <div className="page">
+    <div className="page" data-testid="property-page">
       <Header />
       <main className="page__main page__main--property">
         <section className="property">
           <div className="property__gallery-container container">
             <div className="property__gallery">
-              {images.slice(0, getMaxPhotosAmount(offer)).map((image) => (
+              {images.slice(0, getMaxAmount(offer.images.length, MAX_PHOTOS_AMOUNT)).map((image) => (
                 <div key={image} className="property__image-wrapper">
                   <img className="property__image" src={image} alt={type[0].toUpperCase() + type.slice(1)} />
                 </div>

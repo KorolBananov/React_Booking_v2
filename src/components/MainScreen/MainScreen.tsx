@@ -14,7 +14,7 @@ function MainScreen(): JSX.Element {
   const filteredOffers = filterOffers(offers, city);
 
   return (
-    <div className="page page--gray page--main">
+    <div className="page page--gray page--main" data-testid="main-page">
       <Header/>
 
       <main className={`page__main page__main--index ${filteredOffers.length === 0 && 'page__main--index-empty'}`}>

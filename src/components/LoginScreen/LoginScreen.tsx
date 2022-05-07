@@ -1,12 +1,19 @@
-import {Link} from 'react-router-dom';
-import {AppRoute} from '../../consts';
+import {Link, useNavigate} from 'react-router-dom';
+import {AppRoute, CITIES} from '../../consts';
 import {FormEvent, useRef} from 'react';
 import {useAppDispatch} from '../../hooks';
 import {loginAction} from '../../store/apiActions';
+import Header from '../Header/Header';
+import {getRandomInteger} from "../../utils";
+import {toast} from "react-toastify";
+import {changeCity} from "../../store/usingData/usingData";
 
 function LoginScreen(): JSX.Element {
+  const randomCity = CITIES[getRandomInteger(0, CITIES.length - 1)];
+  const validatePassword = (password: string) => password.match(/[A-Za-z]/) !== null && password.match(/[0-9]/) !== null;
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate()
 
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -15,27 +22,22 @@ function LoginScreen(): JSX.Element {
     evt.preventDefault();
 
     if (loginRef.current && passwordRef.current) {
-      dispatch(loginAction({
-        login: loginRef.current.value,
-        password: passwordRef.current.value,
-      }));
+      validatePassword(passwordRef.current.value) ?
+        dispatch(loginAction({
+          login: loginRef.current.value,
+          password: passwordRef.current.value,
+      })) : toast.error('Password must contain a letter and number');
     }
   };
 
+  const handleClick = (city: string) => {
+    dispatch(changeCity(city));
+    navigate(AppRoute.Root);
+  }
+
   return (
     <div className="page page--gray page--login">
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <Link className="header__logo-link" to={AppRoute.Root}>
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <Header />
       <main className="page__main page__main--login">
         <div className="page__login-container container">
           <section className="login">
@@ -54,9 +56,13 @@ function LoginScreen(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <a className="locations__item-link" href="/">
-                <span>Amsterdam</span>
-              </a>
+              <Link onClick={(evt) => {
+                evt.preventDefault();
+                handleClick(randomCity);
+              }} className="locations__item-link" to={AppRoute.Root} data-testid="city-link"
+              >
+                <span>{randomCity}</span>
+              </Link>
             </div>
           </section>
         </div>

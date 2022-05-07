@@ -1,16 +1,17 @@
-import FavoritePropertyList from '../FavoritePropertyList/FavoritePropertyList';
 import {useAppDispatch} from '../../hooks';
 import { filterOffers } from '../../utils';
-import {AppRoute, CITIES} from '../../consts';
+import {AppRoute} from '../../consts';
 import { changeCity } from '../../store/usingData/usingData';
 import {useNavigate} from 'react-router-dom';
 import {Offer} from '../../types/offer';
+import FavoriteCard from '../FavoriteCard/FavoriteCard';
 
 type FavoriteListProps = {
   favoriteOffers: Offer[];
+  cities: string[];
 }
 
-function FavoritesList({favoriteOffers}: FavoriteListProps): JSX.Element {
+function FavoritesList({favoriteOffers, cities}: FavoriteListProps): JSX.Element {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function FavoritesList({favoriteOffers}: FavoriteListProps): JSX.Element {
 
   return (
     <ul className="favorites__list">
-      {CITIES.map((city) => {
+      {cities.map((city) => {
         const currentCityOffers = filterOffers(favoriteOffers, city);
         if (currentCityOffers.length > 0) {
           return (
@@ -32,14 +33,14 @@ function FavoritesList({favoriteOffers}: FavoriteListProps): JSX.Element {
                   <a onClick={(evt) => {
                     evt.preventDefault();
                     handleClick(city);
-                  }} className="locations__item-link" href="/"
+                  }} className="locations__item-link" href="/" data-testid="city-link"
                   >
                     <span>{city}</span>
                   </a>
                 </div>
               </div>
               <div className="favorites__places">
-                <FavoritePropertyList offers={currentCityOffers} />
+                {currentCityOffers.map((offer) => <FavoriteCard key={offer.id} id={offer.id.toString()} offer={offer}/>)}
               </div>
             </li>
           );

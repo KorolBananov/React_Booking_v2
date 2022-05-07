@@ -5,7 +5,7 @@ import {getReviews} from '../../store/appData/selector';
 import {memo, useEffect} from 'react';
 import {fetchReviewsAction} from '../../store/apiActions';
 import {AuthorizationStatus} from '../../consts';
-import ReviewsList from '../ReviewsLIst/ReviewsList';
+import ReviewsList from '../ReviewsList/ReviewsList';
 import ReviewForm from '../ReviewForm/ReviewForm';
 
 function Reviews(): JSX.Element {

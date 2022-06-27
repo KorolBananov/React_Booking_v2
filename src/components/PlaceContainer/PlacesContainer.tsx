@@ -2,7 +2,7 @@ import {Offer} from '../../types/offer';
 import {useCallback, useState} from 'react';
 import {MapClasses, propertyCardClasses, SortingOptionsValues} from '../../consts';
 import {useAppSelector} from '../../hooks';
-import {getCity} from "../../store/usingData/selector";
+import {getCity} from '../../store/usingData/selector';
 import PropertyCardsList from '../PropertyCardsList/PropertyCardsList';
 import SortOptions from '../SortOptions/SortOptions';
 import Map from '../Map/Map';

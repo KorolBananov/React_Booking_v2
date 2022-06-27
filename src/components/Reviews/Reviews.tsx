@@ -30,4 +30,4 @@ function Reviews(): JSX.Element {
   );
 }
 
-export default memo(Reviews)
+export default memo(Reviews);

@@ -28,7 +28,7 @@ const currentCustomIcon = new Icon({
 
 function Map({className, city, points, activeOffer, mapStyle}: MapProps): JSX.Element {
   const mapRef = useRef(null);
-  const offers = useAppSelector(getOffers)
+  const offers = useAppSelector(getOffers);
   const map = useMap(mapRef, city, offers);
 
   useEffect(() => {

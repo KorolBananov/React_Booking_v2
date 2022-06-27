@@ -17,10 +17,10 @@ import {
   setCurrentOffer,
   setReviews,
   updateOffers
-} from "./appData/appData";
-import {FavoriteStatusData} from "../types/favoriteStatusData";
-import {removeItem, setItem} from "../services/storageService";
-import {requireAuthorization} from "./userData/userData";
+} from './appData/appData';
+import {FavoriteStatusData} from '../types/favoriteStatusData';
+import {removeItem, setItem} from '../services/storageService';
+import {requireAuthorization} from './userData/userData';
 
 export const fetchOffersAction = createAsyncThunk<void, undefined, {
   extra: {

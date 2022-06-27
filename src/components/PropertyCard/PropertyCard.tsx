@@ -26,7 +26,7 @@ function PropertyCard({className, onActiveChoose, id, offer}: PropertyCardProps)
         offerId,
         offerStatus,
       }));
-  }
+  };
 
   return (
     <article onMouseEnter={() => onActiveChoose(offer)} onMouseLeave={() => onActiveChoose(null)} id={id.toString()} className={`${className.placeCardClass} place-card`} data-testid="place-card">

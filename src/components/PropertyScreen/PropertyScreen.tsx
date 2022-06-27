@@ -7,35 +7,26 @@ import {useNavigate, useParams} from 'react-router-dom';
 import {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {changeFavoriteStatusAction, fetchCurrentOfferAction, fetchNearbyOffersAction} from '../../store/apiActions';
-import {getCurrentOffer, getNearbyOffers} from "../../store/appData/selector";
+import {getCurrentOffer, getNearbyOffers} from '../../store/appData/selector';
 import {getAuthorizationStatus} from '../../store/userData/selector';
 import {FavoriteStatusData} from '../../types/favoriteStatusData';
 import NotFoundScreen from '../NotFoundScreen/NotFoundScreen';
 import Reviews from '../Reviews/Reviews';
 
 function PropertyScreen(): JSX.Element | null {
-
   const params = useParams();
-
   const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
-
   const offer = useAppSelector(getCurrentOffer);
-
   const nearbyOffers = useAppSelector(getNearbyOffers);
-
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
-
-
   useEffect(() => {
     dispatch(fetchCurrentOfferAction(params.id));
   }, [dispatch, params.id]);
 
-
   useEffect(() => {
     dispatch(fetchNearbyOffersAction(params.id));
-    }, [dispatch, params.id]);
+  }, [dispatch, params.id]);
 
   const handleClick = ({offerId, offerStatus}: FavoriteStatusData) => {
     if (authorizationStatus !== AuthorizationStatus.Auth) {
